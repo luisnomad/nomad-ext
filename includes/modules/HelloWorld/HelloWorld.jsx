@@ -9,13 +9,13 @@ class HelloWorld extends Component {
 
   render() {
     const { title, content: Content } = this.props;
+    console.log("using react!");
 
     return (
       <div className="alert alert-success" role="alert">
         <h4 className="alert-heading">{title}</h4>
         <p>
           <Content />
-          !!
         </p>
         <hr />
       </div>

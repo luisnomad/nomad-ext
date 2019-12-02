@@ -24,7 +24,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Nomad Ext. If not, see https://www.gnu.org/licenses/gpl-2.0.html.
 */
-
+define( 'NOEX_DEBUG', true );
 
 if ( ! function_exists( 'noex_initialize_extension' ) ):
 /**
@@ -41,9 +41,12 @@ add_action( 'wp_enqueue_scripts', 'add_theme_scripts' );
 function add_theme_scripts() {
 	wp_enqueue_style(
 		'bootstrap',
-		plugins_url( 'vendor/bootstrap/css/bootstrap.min.css', __FILE__ )
+		plugins_url( 'vendor_client/bootstrap/css/bootstrap.min.css', __FILE__ )
 	);
 	// wp_register_script( 'jQuery', 'https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js', null, null, true );
 	// wp_enqueue_script('jQuery');
 }
 endif;
+
+// https://github.com/nicmart/StringTemplate
+require 'vendor/autoload.php';

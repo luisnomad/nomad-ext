@@ -34,18 +34,56 @@ class NOEX_HelloWorld extends ET_Builder_Module {
 		];
 	}
 
-	public function render( $attrs, $content = null, $render_slug ) {
-		$template = '';
-		$template .= '<div class="alert alert-success" role="alert">';
-		$template .= '<h4 class="alert-heading">%1$s</h4>';
-		$template .= '<p>%2$s</p>';
-		$template .= '<hr />';
-		$template .= '</div>';
-		return sprintf(
-			$template, 
-			$this->props['title'], 
-			$this->props['content'] 
+	/**
+ 	* Remove empty paragraphs created by wpautop()
+ 	* @author Ryan Hamilton
+ 	* @link https://gist.github.com/Fantikerz/5557617
+ 	*/
+	public function remove_empty_p( $content ) {
+		$content = force_balance_tags( $content );
+		$content = preg_replace( '#<p>\s*+(<br\s*/*>)?\s*</p>#i', '', $content );
+		$content = preg_replace( '~\s?<p>(\s|&nbsp;)+</p>\s?~', '', $content );
+		return $content;
+	}
+
+	public function get_all_experiences() {
+		$args = array(  
+			'post_type' => 'job_experience',
+			'post_status' => 'publish',
+			// 'posts_per_page' => -1, 
+			// 'orderby' => "title", 
+			// 'order' => "ASC", 
 		);
+
+		$loop = new WP_Query( $args ); 
+		
+		foreach ( $loop->posts as $exps ) {
+			$field = get_field( 'rol_name', $exps->ID );
+			// echo '<pre>' . var_export($exps, true) . '</pre>';
+			echo '<pre>' . $field . '</pre>';
+		}
+
+		/*
+		while ( $loop->have_posts() ) : $loop->the_post(); 
+			var_dump(get_field('rol_name'));
+		endwhile;
+		*/
+		wp_reset_postdata();
+	}	
+
+	public function render( $attrs, $content = null, $render_slug ) {
+		$engine = new StringTemplate\SprintfEngine;
+
+		$template = '';
+		$template .= '<div class="nmd-ext-resume">';
+		$template .= '<h4 class="nmd-ext-resume__heading">{title}</h4>';
+		$template .= '</div>';
+
+		$this->get_all_experiences();
+
+		return $engine->render($template, [
+			"title" => $this->props['title']
+		]);		
 	}
 }
 
